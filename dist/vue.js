@@ -696,6 +696,8 @@
           // 新老都有儿子
           updateChildren(el, oldChildren, newChildren);
         }
+
+        return el;
       }
     }
 
@@ -874,10 +876,17 @@
     function lifeCycleMixin(Vue) {
       Vue.prototype._update = function (vnode) {
         // 采用的是 先序深度遍历 创建节点 （遇到节点就创造节点，递归创建）
-        const vm = this; // 第一次渲染是根据虚拟节点生成真实节点，替换掉原来的节点
-        // 如果是第二次，生成一个新的虚拟节点，和老的虚拟节点进行对比
+        const vm = this;
+        let prevVnode = vm._prevVnode; // 第一次渲染是根据虚拟节点生成真实节点，替换掉原来的节点
 
-        vm.$el = patch(vm.$el, vnode);
+        vm._prevVnode = vnode; // 如果是第二次，生成一个新的虚拟节点，和老的虚拟节点进行对比
+
+        if (!prevVnode) {
+          // 没有节点就是初次渲染
+          vm.$el = patch(vm.$el, vnode);
+        } else {
+          vm.$el = patch(prevVnode, vnode);
+        }
       };
     }
     function callHook(vm, hook) {
@@ -992,53 +1001,7 @@
     initMixin(Vue);
     renderMixin(Vue);
     lifeCycleMixin(Vue);
-    initGlocalAPI(Vue); // 先生成一个虚拟节点
-
-    let vm1 = new Vue({
-      data() {
-        return {
-          name: 'ricardo'
-        };
-      }
-
-    });
-    let render1 = compileToFunction(`
-    <div>
-        <ul>
-            <li key="A">A</li>
-            <li key="B">B</li>
-            <li key="C">C</li>
-            <li key="D">D</li>
-        </ul>
-    </div>`);
-    let oldVnode = render1.call(vm1); // 第一次的虚拟节点
-
-    let el1 = createElm(oldVnode);
-    document.body.appendChild(el1);
-    let vm2 = new Vue({
-      data() {
-        return {
-          name: '赵日天'
-        };
-      }
-
-    });
-    let render2 = compileToFunction(`
-    <div>
-        <ul>
-            <li key="F">F</li>
-            <li key="B">B</li>
-            <li key="A">A</li>
-            <li key="E">E</li>
-            <li key="P">P</li>
-        </ul>
-    </div>`);
-    let newVnode = render2.call(vm2); // let el2 = createElm(newVnode);
-    // document.body.appendChild(el2);
-
-    setTimeout(() => {
-      patch(oldVnode, newVnode); // 对比两个虚拟节点的差异，更新需要更新的地方
-    }, 2000); // 再去生成一个新的虚拟节点 patch
+    initGlocalAPI(Vue); // // 先生成一个虚拟节点
     // 2. 会将用户的选项放到 vm.$options 上
     // 3. 会对当前属性上搜索有没有data数据 initState
     // 4. 有data判断data 是不是一个函数，如果是函数取返回值initData

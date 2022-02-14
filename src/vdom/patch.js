@@ -46,6 +46,8 @@ export function patch(oldVnode, vnode) {
             // 新老都有儿子
             updateChildren(el, oldChildren, newChildren);
         }
+
+        return el;
     }
 }
 

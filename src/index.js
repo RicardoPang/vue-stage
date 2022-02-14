@@ -15,46 +15,46 @@ renderMixin(Vue);
 lifeCycleMixin(Vue);
 initGlocalAPI(Vue);
 
-// 先生成一个虚拟节点
-let vm1 = new Vue({
-    data() {
-        return {name: 'ricardo'}
-    }
-})
-let render1 = compileToFunction(`
-    <div>
-        <ul>
-            <li key="A">A</li>
-            <li key="B">B</li>
-            <li key="C">C</li>
-            <li key="D">D</li>
-        </ul>
-    </div>`);
-let oldVnode = render1.call(vm1); // 第一次的虚拟节点
-let el1 = createElm(oldVnode);
-document.body.appendChild(el1);
-
-let vm2 = new Vue({
-    data() {
-        return {name: '赵日天'}
-    }
-})
-let render2 = compileToFunction(`
-    <div>
-        <ul>
-            <li key="F">F</li>
-            <li key="B">B</li>
-            <li key="A">A</li>
-            <li key="E">E</li>
-            <li key="P">P</li>
-        </ul>
-    </div>`);
-let newVnode = render2.call(vm2);
-// let el2 = createElm(newVnode);
-// document.body.appendChild(el2);
-setTimeout(() => {
-    patch(oldVnode, newVnode); // 对比两个虚拟节点的差异，更新需要更新的地方
-}, 2000);
+// // 先生成一个虚拟节点
+// let vm1 = new Vue({
+//     data() {
+//         return {name: 'ricardo'}
+//     }
+// })
+// let render1 = compileToFunction(`
+//     <div>
+//         <ul>
+//             <li key="A">A</li>
+//             <li key="B">B</li>
+//             <li key="C">C</li>
+//             <li key="D">D</li>
+//         </ul>
+//     </div>`);
+// let oldVnode = render1.call(vm1); // 第一次的虚拟节点
+// let el1 = createElm(oldVnode);
+// document.body.appendChild(el1);
+//
+// let vm2 = new Vue({
+//     data() {
+//         return {name: '赵日天'}
+//     }
+// })
+// let render2 = compileToFunction(`
+//     <div>
+//         <ul>
+//             <li key="F">F</li>
+//             <li key="B">B</li>
+//             <li key="A">A</li>
+//             <li key="E">E</li>
+//             <li key="P">P</li>
+//         </ul>
+//     </div>`);
+// let newVnode = render2.call(vm2);
+// // let el2 = createElm(newVnode);
+// // document.body.appendChild(el2);
+// setTimeout(() => {
+//     patch(oldVnode, newVnode); // 对比两个虚拟节点的差异，更新需要更新的地方
+// }, 2000);
 
 // 再去生成一个新的虚拟节点 patch
 // 导出Vue给别人使用
